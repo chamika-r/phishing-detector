@@ -19,7 +19,7 @@ A machine learning model trained on 5,172 real emails that detects phishing atte
 
 **1. Clone the repo**
 ```bash
-git clone https://github.com/YOUR_USERNAME/phishing-detector.git
+git clone https://github.com/chamika-r/phishing-detector.git
 cd phishing-detector
 ```
 
@@ -141,4 +141,4 @@ This tool is built for educational purposes as part of a cybersecurity portfolio
 
 **Chamika Ranaweera**  
 Undergraduate — Cybersecurity  
-[GitHub](git clone https://github.com/chamika-r/phishing-detector.git)
+[GitHub](https://github.com/chamika-r)
