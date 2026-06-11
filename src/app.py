@@ -1,6 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore')
-
+import time
 from flask import Flask, request, jsonify
 import joblib
 import pandas as pd
@@ -32,11 +32,19 @@ def generate_explanation(prediction, phishing_prob, email_text):
                 f"These are common tactics used in phishing attacks."
             )
         else:
-            return (
-                "This email shows phishing patterns based on its "
-                "overall word frequency profile, even without "
-                "obvious trigger words. Treat with caution."
-            )
+            if phishing_prob < 60:
+                return (
+                    "This email shows borderline characteristics. "
+                    "The model is uncertain — no obvious phishing "
+                    "words were detected but the word pattern is "
+                    "slightly unusual. Manual review recommended."
+                )
+            else:
+                return (
+                    "This email shows phishing patterns based on its "
+                    "overall word frequency profile, even without "
+                    "obvious trigger words. Treat with caution."
+                )
     else:
         return (
             "This email appears safe. It does not contain common "
@@ -77,7 +85,13 @@ def analyze():
         return jsonify({
             "error": "email_text cannot be empty"
         }), 400
+    
+    if len(data['email_text']) > 10000:
+        return jsonify({
+            "error": "email_text too long. Maximum 10,000 characters."
+        }), 400
 
+    start_time = time.time()
     email_text = data['email_text'].lower()
 
     # Count word frequencies
@@ -105,7 +119,8 @@ def analyze():
         "confidence": confidence,
         "phishing_probability": phishing_prob,
         "safe_probability": safe_prob,
-        "explanation": explanation
+        "explanation": explanation,
+        "response_time_ms": round((time.time() - start_time) * 1000, 2)
     })
 
 if __name__ == '__main__':
